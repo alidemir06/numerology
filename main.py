@@ -1,5 +1,8 @@
 import streamlit as st
 import datetime
+import time
+from googletrans import Translator
+import io
 
 st.set_page_config(
     page_title="Numerology",
@@ -8,6 +11,13 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 st.header("Numeric Analysis")
+
+on = st.toggle("ENG|TR")
+
+def translate(text, src_lang='en', dest_lang='tr'):
+    translator = Translator()
+    translated_text = translator.translate(text, src=src_lang, dest=dest_lang)
+    return translated_text.text
 
 def reduce_to_single_digit_or_master_number(number):
     while number > 9 and number not in [11, 22, 33]:
@@ -143,8 +153,16 @@ if run:
     birth_date = str(data)
     life_path_number = calculate_life_path_number(birth_date)
     destiny_number = calculate_destiny_number(full_name)
-    st.write(f"Your life path number is {life_path_number}! " + dictionary[life_path_number])
-    st.write(f"In addition, your destiny number is {destiny_number}! " + dictionary[destiny_number])
+    path = f"Your life path number is {life_path_number}! " + dictionary[life_path_number]
+    destiny = f"In addition, your destiny number is {destiny_number}! " + dictionary[destiny_number]
+    if on:
+        path = translate(path)
+        destiny = translate(destiny)
+        st.write(path)
+        st.write(destiny)
+
+    st.write(path)
+    st.write(destiny)
 
 
 
