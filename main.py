@@ -1,8 +1,13 @@
 import streamlit as st
 import datetime
 
-data = st.date_input(label="Doğum gününüz nedir?", value=datetime.date.today(), max_value=datetime.date.today(), min_value=datetime.date(year=1906, month=12, day=31))
-birth_date = str(data)
+st.set_page_config(
+    page_title="Numerology",
+    page_icon="🧊",
+    layout="centered",
+    initial_sidebar_state="expanded",
+)
+st.header("Numeric Analysis")
 
 def reduce_to_single_digit_or_master_number(number):
     while number > 9 and number not in [11, 22, 33]:
@@ -23,7 +28,33 @@ def calculate_life_path_number(birth_date):
 
     return life_path_number
 
-life_path_number = calculate_life_path_number(birth_date)
+
+def letter_to_number(letter):
+    letter = letter.upper()
+    letter_mapping = {
+        'A': 1, 'J': 1, 'S': 1,
+        'B': 2, 'K': 2, 'T': 2,
+        'C': 3, 'L': 3, 'U': 3,
+        'D': 4, 'M': 4, 'V': 4,
+        'E': 5, 'N': 5, 'W': 5,
+        'F': 6, 'O': 6, 'X': 6,
+        'G': 7, 'P': 7, 'Y': 7,
+        'H': 8, 'Q': 8, 'Z': 8,
+        'I': 9, 'R': 9
+    }
+    return letter_mapping.get(letter, 0)
+
+def reduce_to_single_digit_or_master_number(number):
+    while number > 9 :
+        number = sum(int(digit) for digit in str(number))
+    return number
+    
+def calculate_destiny_number(full_name):
+    total = 0
+    for letter in full_name.replace(' ', ''):
+        total += letter_to_number(letter)
+    return reduce_to_single_digit_or_master_number(total)
+
 
 one = """Just as Aries, the first sign of the zodiac, is about action and initiation, 1 is linked to forward 
 motion in Numerology. 1 symbolizes a pioneering spirit, independent nature, and innate leadership capabilities. 
@@ -102,5 +133,18 @@ dependable, Master Number 22 is always on a mission to transform."""
 
 dictionary = {1:one, 2:two, 3:three, 4:four, 5:five, 6:six, 7:seven, 8:eight, 9:nine, 11:eleven, 22:twentytwo}
 
-st.write(f"Your life path number is {life_path_number}! " + dictionary[life_path_number])
+with st.form("Information", clear_on_submit=False):
+    data = st.date_input(label="What is your birthday?", value=datetime.date.today(), max_value=datetime.date.today(), min_value=datetime.date(year=1906, month=12, day=31))
+    full_name = st.text_input(label= "Enter your full name")
+    run = st.form_submit_button("Send", type="primary")
+
+
+if run:
+    birth_date = str(data)
+    life_path_number = calculate_life_path_number(birth_date)
+    destiny_number = calculate_destiny_number(full_name)
+    st.write(f"Your life path number is {life_path_number}! " + dictionary[life_path_number])
+    st.write(f"In addition, your destiny number is {destiny_number}! " + dictionary[destiny_number])
+
+
 
