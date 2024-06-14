@@ -160,9 +160,9 @@ if run:
         destiny = translate(destiny)
         st.write(path)
         st.write(destiny)
-
-    st.write(path)
-    st.write(destiny)
+    else:
+        st.write(path)
+        st.write(destiny)
 
 
 
